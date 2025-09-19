@@ -45,12 +45,6 @@ def test_auth():
 def health():
     return jsonify({"status": "healthy"})
 
-@app.route("/init-db")
-def initialize_database():
-    from database import init_db
-    init_db()
-    return jsonify({"message": "Database initialized successfully!"}), 200
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
