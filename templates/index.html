@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depósito via PIX - Sistema Moderno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-qrcode"></i> Depósito via PIX</h1>
+        <p style="color: #718096; margin-bottom: 30px; font-size: 0.95rem;">
+            Gere seu QR Code PIX de forma rápida e segura
+        </p>
+        
+        <!-- Formulário para inserir valor e descrição do depósito -->
+        <form id="depositForm">
+            <div style="text-align: left;">
+                <label for="amount">
+                    <i class="fas fa-dollar-sign" style="margin-right: 8px; color: #667eea;"></i>
+                    Valor (R$)
+                </label>
+                <input type="number" id="amount" name="amount" step="0.01" min="0.01" required 
+                       placeholder="Ex: 25.00">
+                
+                <label for="description">
+                    <i class="fas fa-edit" style="margin-right: 8px; color: #667eea;"></i>
+                    Descrição
+                </label>
+                <input type="text" id="description" name="description" required 
+                       placeholder="Ex: Pagamento de serviço">
+            </div>
+            
+            <button type="submit" id="createBtn">
+                <i class="fas fa-magic" style="margin-right: 8px;"></i>
+                Gerar QR Code PIX
+            </button>
+        </form>
+
+        <!-- Container onde o QR Code será exibido -->
+        <div id="qrCodeContainer" style="display: none;">
+            <h2><i class="fas fa-qrcode" style="margin-right: 10px; color: #667eea;"></i>QR Code do PIX</h2>
+            <img id="qrCode" src="" alt="QR Code PIX" />
+            
+            <div style="margin: 20px 0;">
+                <label for="pixCode" style="display: block; margin-bottom: 8px; color: #4a5568; font-weight: 500;">
+                    <i class="fas fa-copy" style="margin-right: 8px; color: #667eea;"></i>
+                    Código PIX (Copia e Cola)
+                </label>
+                <input type="text" id="pixCode" readonly />
+                <button onclick="copyPixCode()" style="margin-top: 10px; background: linear-gradient(135deg, #48bb78, #38a169);">
+                    <i class="fas fa-clipboard" style="margin-right: 8px;"></i>
+                    Copiar Código PIX
+                </button>
+            </div>
+        </div>
+
+        <!-- Container para exibir o status da transação -->
+        <div id="statusContainer" style="display: none;">
+            <h2><i class="fas fa-info-circle" style="margin-right: 10px; color: #38b2ac;"></i>Status do Pagamento</h2>
+            <p id="statusMessage">
+                <i class="fas fa-clock" style="margin-right: 8px;"></i>
+                Aguardando pagamento...
+            </p>
+            <!-- Botão para verificar manualmente o status -->
+            <button id="checkPaymentStatusBtn" onclick="manualCheckPaymentStatus()" style="margin-top: 15px;">
+                <i class="fas fa-search" style="margin-right: 8px;"></i>Verificar Pagamento
+            </button>
+        </div>
+
+        <!-- Informações adicionais -->
+        <div id="infoContainer" style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 12px; border-left: 4px solid #0ea5e9; display: none;">
+            <h3 style="color: #0c4a6e; margin-bottom: 10px;">
+                <i class="fas fa-lightbulb" style="margin-right: 8px;"></i>
+                Como usar:
+            </h3>
+            <ul style="text-align: left; color: #075985; font-size: 0.9rem; line-height: 1.6;">
+                <li>📱 Abra seu app do banco</li>
+                <li>🔍 Procure por "PIX" ou "Pagar com QR Code"</li>
+                <li>📷 Escaneie o QR Code ou cole o código PIX</li>
+                <li>✅ Confirme o pagamento</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="{{ url_for("static", filename="script.js") }}"></script>
+</body>
+</html>
