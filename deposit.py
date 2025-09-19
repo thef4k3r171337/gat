@@ -12,11 +12,11 @@ def create_deposit(token, amount, description):
         "Content-Type": "application/json"
     }
     
-    # URL de Callback (pode ser ajustada conforme necessário)
+    # URL de Callback (pode ser ajustada conforme necessário )
     data = {
         "amount": amount,
         "external_id": "id_unico_12345",  # ID único para controle idempotente
-        "clientCallbackUrl": "https://7ee41340366a.ngrok-free.app/callback",  # A URL de callback para receber notificações
+        "clientCallbackUrl": "https://api-pix-service.onrender.com/callback",  # A URL de callback para receber notificações
         "payer": {
             "name": "João da Silva",  # Nome do pagador
             "email": "joao@example.com",  # Email do pagador
@@ -25,7 +25,7 @@ def create_deposit(token, amount, description):
         "description": description  # Descrição do depósito
     }
     
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, data=json.dumps(data ))
     
     if response.status_code == 201:
         deposit_data = response.json()
@@ -41,7 +41,7 @@ def create_deposit(token, amount, description):
             
             return {
                 'pix_qr_code': f"data:image/png;base64,{qr_code_base64}",
-                'pix_key': qr_code_data,
+                'pix_key': deposit_data['qrCodeResponse']['transactionId'],
                 'transaction_id': deposit_data['qrCodeResponse']['transactionId']
             }
         else:
