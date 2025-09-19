@@ -1,6 +1,8 @@
 import os
 from flask import Flask, jsonify, request
 import secrets
+from deposit import create_deposit
+from database import add_transaction
 
 app = Flask(__name__)
 
@@ -29,7 +31,8 @@ def home():
         "version": "2.0",
         "endpoints": [
             "GET / - Status da API",
-            "POST /api/v1/test - Teste com autenticação"
+            "POST /api/v1/test - Teste com autenticação",
+            "POST /api/v1/pix/deposit - Gerar PIX"
         ]
     })
 
@@ -40,6 +43,39 @@ def test_auth():
         "message": "Autenticação funcionando!",
         "authenticated": True
     })
+
+@app.route("/api/v1/pix/deposit", methods=["POST"])
+@require_api_key
+def generate_pix():
+    data = request.get_json()
+    if not data or "amount" not in data or "description" not in data:
+        return jsonify({"error": "Amount and description are required"}), 400
+
+    amount = data["amount"]
+    description = data["description"]
+
+    try:
+        # Obtenha o token de autenticação da requisição
+        auth_header = request.headers.get("Authorization")
+        token = auth_header.replace("Bearer ", "")
+
+        # Chame a função para criar o depósito e gerar o PIX
+        pix_data = create_deposit(token, amount, description)
+
+        # Adicione a transação ao banco de dados
+        add_transaction(
+            transaction_id=pix_data["transaction_id"],
+            amount=amount,
+            description=description,
+            status="pending",
+            qr_code_url=pix_data["pix_qr_code"],
+            pix_code=pix_data["pix_key"]
+        )
+
+        return jsonify(pix_data), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/health")
 def health():
